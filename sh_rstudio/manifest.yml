@@ -1,11 +1,11 @@
 ---
-name: RStudio Server
+name: RStudio Server Direct
 category: Interactive Apps
 subcategory: Servers
 role: batch_connect
 description: |
-  This app will launch [RStudio Server] an IDE for [R] on [Sherlock].
+  This app will launch [RStudio Server] an IDE for [R] on [VAI] HPC.
   
   [RStudio Server]: https://www.rstudio.com/products/rstudio-server/
   [R]: https://www.r-project.org/
-  [Sherlock]: https://www.sherlock.stanford.edu
+  [VAI]: https://www.vai.org

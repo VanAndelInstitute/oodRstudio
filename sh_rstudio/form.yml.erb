@@ -1,6 +1,6 @@
 <%-
   # get _list_partitions
-  p_cmd = "sinfo -ho %R | sort -u"
+  p_cmd = "/usr/local/bin/sinfo -ho %R | sort -u"
   begin
     output, status = Open3.capture2e(p_cmd)
     if status.success?
@@ -14,7 +14,7 @@
   end
 
   # get R modules
-  m_cmd = "bash -il -c 'module -t avail R/ |& grep ^R/' 2>/dev/null"
+  m_cmd = "bash -il -c 'module -t avail bbc2/R/ |& grep R' 2>/dev/null"
   begin
     output, status = Open3.capture2e(m_cmd)
     if status.success?
@@ -28,7 +28,7 @@
   end
 -%>
 ---
-cluster: "sherlock"
+cluster: "hpc"
 
 form:
   - sh_r_version
@@ -100,7 +100,7 @@ attributes:
     label: "#GPUs (optional)"
     widget: "number_field"
     help: "<small>Number of GPUs to allocate (don't forget to load the `cuda` module in the `Modules` field above and to select a partition with GPUs)</small>"
-    min: 1
+    min: 0
     max: 8
     value: ""
 
