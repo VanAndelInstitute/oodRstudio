@@ -1,17 +1,17 @@
 <%-
   # get _list_partitions
-  p_cmd = "/usr/local/bin/sinfo -ho %R | sort -u"
-  begin
-    output, status = Open3.capture2e(p_cmd)
-    if status.success?
-      _list_partitions = output.split("\n").map(&:strip).reject(&:blank?).sort
-    else
-      raise output
-    end
-  rescue => e
-    _list_partitions = []
-    p_error = e.message.strip
-  end
+#  p_cmd = "/usr/local/bin/sinfo -ho %R | sort -u"
+#  begin
+#    output, status = Open3.capture2e(p_cmd)
+#    if status.success?
+#      _list_partitions = output.split("\n").map(&:strip).reject(&:blank?).sort
+#    else
+#      raise output
+#    end
+#  rescue => e
+#    _list_partitions = []
+#    p_error = e.message.strip
+#  end
 
   # get R modules
   m_cmd = "bash -il -c 'module -t avail bbc2/R/ |& grep R' 2>/dev/null"
@@ -35,7 +35,7 @@ form:
   - sh_modules
   - sh_partition
   - sh_cpus
-  - sh_gpus
+#  - sh_gpus
   - sh_mem
   - bc_num_hours
   - bc_email_on_started
@@ -46,7 +46,6 @@ attributes:
     label: "Additional modules (optional)"
     help: |
         <small>Space separated list of additional modules to load</br/>
-        Full list at https://www.sherlock.stanford.edu/docs/software/list </small>
 
   sh_r_version:
     label: "R version"
@@ -68,25 +67,9 @@ attributes:
 
   sh_partition:
     label: "Partition"
-    value: "dev"
+    value: "short"
     required: true
-    help: |
-      <small>Partition to submit the job to</small>
-    <%- if p_error -%>
-      <span class="text-danger">Error when parsing partitions:</span>
-      ```
-      <%= p_error.gsub("\n", "\n      ") %>
-      ```
-    <%- end -%>
-    <%- if _list_partitions.blank? -%>
-    widget: text_field
-    <%- else -%>
-    widget: select
-    options:
-      <%- _list_partitions.each do |q| -%>
-      - [ "<%= q %>", "<%= q %>" ]
-      <%- end -%>
-    <%- end -%>
+    help: "For example: quick short bigmem long, or your private nodes."
 
   sh_cpus:
     label: "#CPUs"
