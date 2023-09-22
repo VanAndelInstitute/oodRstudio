@@ -1,10 +1,10 @@
 <form action="/pun/sys/dashboard/noVNC-1.3.0/vnc.html" method="get" target="_blank">
   <input type="hidden" name="path" value="rnode/<%= host %>/<%= port %>/websockify"/>
-  <input type="hidden" name="username" value="<%= ENV["USER"] %>">
-  <input type="hidden" name="password" value="<%= password %>">
+  <input type="hidden" name="username" value="<%= password.split(/,/,4)[2] %>">
+  <input type="hidden" name="password" value="<%= password.split(/,/,4)[3] %>">
   <input type="hidden" name="autoconnect" value="true">
-  <input type="hidden" name="appUri" value="">
+  <input type="hidden" name="resize" value="scale">
   <button class="btn btn-primary" type="submit">
-    <i class="fa fa-registered"></i> Connect to instrument 
+    <i class="fa fa-registered"></i> Connect to <b> <%= password.split(/,/,4)[1] %> </b> (  <%= password.split(/,/,4)[0] %> )
   </button>
 </form>
