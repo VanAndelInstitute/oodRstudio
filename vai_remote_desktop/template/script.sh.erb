@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+#
+# Load modules
+#
+
+# Purge the module environment to avoid conflicts
+#module reset
+
+echo "Starting up websock..."
+set -x
+websockify -D ${port} <%= context.host_name.split(/,/,4)[0] %>
+sleep infinity

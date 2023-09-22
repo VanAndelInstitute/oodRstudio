@@ -1,0 +1,9 @@
+---
+name: VAI instrument Access
+category: Interactive Apps
+subcategory: Servers
+role: batch_connect
+description: |
+  This app will allow you to connect to instruments within  [VAI].
+  
+  [VAI]: https://www.vai.org

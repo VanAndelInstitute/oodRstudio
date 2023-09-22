@@ -1,0 +1,12 @@
+<%-
+
+  m_cmd = "bash -il -c 'cat /home/zack.ramjan//ondemand/data/sys/dashboard/batch_connect/*/vai_remote_desktop/output/" + id + "/user_defined_context.json | grep host_name | cut -d: -f 2' 2> /dev/null"
+  begin
+     output, status = Open3.capture2e(m_cmd)
+  rescue => e
+    output = ""
+  end
+
+-%>
+
+<%= output %>

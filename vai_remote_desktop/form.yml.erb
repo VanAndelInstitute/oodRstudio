@@ -1,0 +1,97 @@
+<%-
+  # get _list_partitions
+#  p_cmd = "/usr/local/bin/sinfo -ho %R | sort -u"
+#  begin
+#    output, status = Open3.capture2e(p_cmd)
+#    if status.success?
+#      _list_partitions = output.split("\n").map(&:strip).reject(&:blank?).sort
+#    else
+#      raise output
+#    end
+#  rescue => e
+#    _list_partitions = []
+#    p_error = e.message.strip
+#  end
+
+  # get hosts
+  m_cmd = "bash -il -c 'cat /varidata/research/home/zack.ramjan/hosts.txt' 2>/dev/null"
+  #m_cmd = "bash -il -c 'echo hellohost' 2>/dev/null"
+  begin
+    output, status = Open3.capture2e(m_cmd)
+    if status.success?
+      _list_hosts = output.split("\n").map(&:strip).reject(&:blank?).sort
+    else
+      raise output
+    end
+  rescue => e
+    _list_hosts = []
+    m_error = e.message.strip
+  end
+-%>
+---
+cluster: "hpc"
+
+form:
+  - host_name
+#  - sh_modules
+  - sh_partition
+#  - sh_cpus
+#  - sh_gpus
+#  - sh_mem
+  - bc_num_hours
+#  - bc_email_on_started
+
+attributes:
+
+  sh_modules:
+    label: "Additional modules (optional)"
+    help: |
+        <small>Space separated list of additional modules to load</br/>
+
+  host_name:
+    label: "Instrument Computer name"
+    <%- if m_error -%>
+      <span class="text-danger">Error when parsing module versions:</span>
+      ```
+      <%= m_error.gsub("\n", "\n      ") %>
+      ```
+    <%- end -%>
+    <%- if _list_hosts.blank? -%>
+    widget: text_field
+    <%- else -%>
+    widget: select
+    options:
+      <%- _list_hosts.each do |q| -%>
+      - [ "<%= q.split(/,/,3)[1] %>", "<%= q %>" ]
+      <%- end -%>
+    <%- end -%>
+
+  sh_partition:
+    label: "Partition"
+    value: "short"
+    required: true
+    help: "For example: quick short bigmem long, or your private nodes."
+
+  sh_cpus:
+    label: "#CPUs"
+    widget: "number_field"
+    help: "<small>Number of CPU cores to allocate</small>"
+    required: true
+    min: 1
+    value: "1"
+
+  sh_gpus:
+    label: "#GPUs (optional)"
+    widget: "number_field"
+    help: "<small>Number of GPUs to allocate (don't forget to load the `cuda` module in the `Modules` field above and to select a partition with GPUs)</small>"
+    min: 0
+    max: 8
+    value: ""
+
+  sh_mem:
+    label: "Memory (GB) (optional)"
+    widget: "number_field"
+    help: "<small>Amount of memory to allocate</small>"
+
+  bc_num_hours:
+    label: "Runtime (in hours)"
