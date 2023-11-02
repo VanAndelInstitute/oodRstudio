@@ -31,6 +31,7 @@
 cluster: "hpc"
 
 form:
+  - sh_rstudio_version
   - sh_r_version
   - sh_modules
   - sh_partition
@@ -43,9 +44,16 @@ form:
 attributes:
 
   sh_modules:
-    label: "Additional modules (optional)"
+    label: "D Additional modules (optional)"
     help: |
         <small>Space separated list of additional modules to load</br/>
+
+  sh_rstudio_version: 
+    label: "RStudio Version"
+    widget: select
+    options: 
+      - ["2023-06-01-524"]
+      - ["2023-09-01-494"]
 
   sh_r_version:
     label: "R version"

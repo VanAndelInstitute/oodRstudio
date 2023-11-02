@@ -8,7 +8,7 @@
 #module reset
 
 # Load the rstudio module (required)
-export PATH=$PATH:/varidata/research/software/rstudioserver/default/bin
+export PATH=$PATH:/varidata/research/software/rstudioserver/<%= context.sh_rstudio_version %>/bin
 
 # Load the requested R module (required)
 module load <%= context.sh_r_version %>
@@ -28,11 +28,6 @@ export RSTUDIO_AUTH="${PWD}/bin/auth"
 
 export RDATABASECONF="${PWD}/database.conf"
 echo "directory=${PWD}" >> "${RDATABASECONF}"
-
-#rstudio tmp dir
-#
-export RTMPDIR="${TMPDIR}/${USER}/rstudio"
-mkdir -p "${RTMPDIR}"
 
 # Generate an `rsession` wrapper script
 export RSESSION_WRAPPER_FILE="${PWD}/rsession.sh"
@@ -67,5 +62,5 @@ rserver \
   --auth-encrypt-password 0 \
   --rsession-path "${RSESSION_WRAPPER_FILE}" \
   --database-config-file "${RDATABASECONF}" \
-  --server-data-dir "${RTMPDIR}" \
-  --secure-cookie-key-file "${RTMPDIR}/rstudio-server/secure-cookie-key" 2>&1
+  --server-data-dir "${TMPDIR}" \
+  --secure-cookie-key-file "${TMPDIR}/rstudio-server/secure-cookie-key" 2>&1
