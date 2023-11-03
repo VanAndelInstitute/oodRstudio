@@ -8,6 +8,7 @@
 #module reset
 
 # Load the rstudio module (required)
+export RSTUDIOVERSION="<%= context.sh_rstudio_version %>"
 export PATH=$PATH:/varidata/research/software/rstudioserver/<%= context.sh_rstudio_version %>/bin
 
 # Load the requested R module (required)
@@ -26,8 +27,17 @@ module load <%= context.sh_modules %>
 # PAM auth helper used by RStudio
 export RSTUDIO_AUTH="${PWD}/bin/auth"
 
+#database conf
 export RDATABASECONF="${PWD}/database.conf"
 echo "directory=${PWD}" >> "${RDATABASECONF}"
+
+#rsession conf
+export RSESSIONCONF="${PWD}/rsession.conf"
+echo "#" >> "${RSESSIONCONF}"
+if [[ "$RSTUDIOVERSION" > "2023-06-02-999" ]]; then
+   echo "copilot-enabled=1" >> "${RSESSIONCONF}"
+fi
+
 
 # Generate an `rsession` wrapper script
 export RSESSION_WRAPPER_FILE="${PWD}/rsession.sh"
@@ -61,6 +71,7 @@ rserver \
   --auth-pam-helper-path "${RSTUDIO_AUTH}" \
   --auth-encrypt-password 0 \
   --rsession-path "${RSESSION_WRAPPER_FILE}" \
+  --rsession-config-file "${RSESSIONCONF}" \
   --database-config-file "${RDATABASECONF}" \
   --server-data-dir "${TMPDIR}" \
   --secure-cookie-key-file "${TMPDIR}/rstudio-server/secure-cookie-key" 2>&1
