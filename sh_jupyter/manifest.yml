@@ -3,6 +3,5 @@ name: Jupyter Notebook
 category: Interactive Apps
 subcategory: Servers
 role: batch_connect
-description: "This app will launch a [Jupyter Notebook] server on [Sherlock].
-  \r\n\r\n[Jupyter Notebook]: https://www.jupyter.org/\r\n[Sherlock]:
-  https://www.sherlock.stanford.edu\r\n"
+description: "This app will launch a [Jupyter Notebook].<br/>NOTE: The first time you run, a python virtual env is created in your /home folder, and jupyter is installed into it using pip. This may take a few minutes, but subsequent jobs will be faster.
+  \r\n\r\n[Jupyter Notebook]: https://www.jupyter.org/\r\n"

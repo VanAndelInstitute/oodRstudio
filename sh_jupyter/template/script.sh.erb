@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash -i
 
 # Benchmark info
 echo "TIMING - Starting main script at: $(date)"
@@ -13,8 +13,8 @@ cd "${HOME}"
 # Purge the module environment to avoid conflicts
 module purge
 
-# Load the Jupyter module (required)
-module load py-jupyter/1.0.0_<%= context.sh_python_version %>
+# Load the python  module (required)
+module load <%= context.sh_python_version %>
 
 <%- unless context.sh_modules.blank? -%>
 # Load the require modules
@@ -24,6 +24,15 @@ module load <%= context.sh_modules %>
 # List loaded modules
 module list
 
+#make label for  python venv and activate
+VENV=`echo jupyter_<%= context.sh_python_version %> | tr -c '[:alnum:]._-' '_'`
+python -m venv /home/$USER/$VENV
+echo created venv /home/$USER/$VENV
+source /home/$USER/$VENV/bin/activate
+
+#install jupyter if needed
+pip3 install jupyter
+which jupyter
 # Benchmark info
 echo "TIMING - Starting jupyter at: $(date)"
 
