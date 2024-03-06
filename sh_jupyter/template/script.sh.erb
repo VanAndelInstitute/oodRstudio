@@ -30,10 +30,11 @@ VENV=`echo jupyter_<%= context.sh_python_version %> | tr -c '[:alnum:]._-' '_'`
 if [ ! -d  /home/$USER/$VENV ] && [ -d /varidata/research/software/jupyter/$VENV ] ; then
   echo preloading python files from /varidata/research/software/jupyter/$VENV
   cp -Pr  /varidata/research/software/jupyter/$VENV .
-  sed -i 's/zack.ramjan/$USER/g' /varidata/research/software/jupyter/$VENV/bin/[Aajnhiqsw]*
-  sed -i 's/zack.ramjan/$USER/g' /varidata/research/software/jupyter/$VENV/bin/pip*
-  sed -i 's/zack.ramjan/$USER/g' /varidata/research/software/jupyter/$VENV/bin/pyj*
-  sed -i 's/zack.ramjan/$USER/g' /varidata/research/software/jupyter/$VENV/bin/pyg*
+  sed -i "s/pyuser/$USER/g" $HOME/$VENV/bin/[Aajnhiqsw]*
+  sed -i "s/pyuser/$USER/g" $HOME/$VENV/bin/pip*
+  sed -i "s/pyuser/$USER/g" $HOME/$VENV/bin/pyj*
+  sed -i "s/pyuser/$USER/g" $HOME/$VENV/bin/pyg*
+  sed -i "s/pyuser/$USER/g" $HOME/$VENV/bin/pyb*
 fi
 
 python -m venv /home/$USER/$VENV
