@@ -58,6 +58,12 @@ EOL
 )
 chmod 700 "${RSESSION_WRAPPER_FILE}"
 
+#rstudio tmp dir
+export RTMPDIR="${TMPDIR}/${USER}/rstudio"
+mkdir -p "${RTMPDIR}"
+
+
+
 # Set working directory to home directory
 cd "${HOME}"
 
@@ -73,5 +79,5 @@ rserver \
   --rsession-path "${RSESSION_WRAPPER_FILE}" \
   --rsession-config-file "${RSESSIONCONF}" \
   --database-config-file "${RDATABASECONF}" \
-  --server-data-dir "${TMPDIR}" \
-  --secure-cookie-key-file "${TMPDIR}/rstudio-server/secure-cookie-key" 2>&1
+  --server-data-dir "${RTMPDIR}" \
+  --secure-cookie-key-file "${RTMPDIR}/rstudio-server/secure-cookie-key" 2>&1
