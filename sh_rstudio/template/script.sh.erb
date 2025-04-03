@@ -11,6 +11,15 @@
 export RSTUDIOVERSION="<%= context.sh_rstudio_version %>"
 export PATH=$PATH:/varidata/research/software/rstudioserver/<%= context.sh_rstudio_version %>/bin
 
+<%- if context.sh_r_session.include? "NEW" -%>
+DATAID=`date '+%Y-%m-%d_%H-%M-%S'`
+<%- else -%>
+DATAID=<%= context.sh_r_session %>
+<%- end -%>
+
+export RSTUDIO_DATA_HOME=$HOME/.rstudiosessions/$DATAID
+mkdir -p $HOME/.rstudiosessions/$DATAID
+
 # Load the requested R module (required)
 module load <%= context.sh_r_version %>
 
@@ -47,6 +56,7 @@ sed 's/^ \{2\}//' > "${RSESSION_WRAPPER_FILE}" << EOL
   #!/usr/bin/env bash
 
   # Log all output from this script
+  export RSTUDIO_DATA_HOME=$HOME/.rstudiosessions/$DATAID
   export RSESSION_LOG_FILE="${PWD}/rsession.log"
   exec &>>"\${RSESSION_LOG_FILE}"
 
@@ -59,7 +69,7 @@ EOL
 chmod 700 "${RSESSION_WRAPPER_FILE}"
 
 #rstudio tmp dir
-export RTMPDIR="${TMPDIR}/${USER}/rstudio"
+export RTMPDIR="${TMPDIR}/${USER}/rstudio/${DATAID}"
 mkdir -p "${RTMPDIR}"
 
 

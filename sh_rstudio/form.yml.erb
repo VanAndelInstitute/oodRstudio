@@ -26,6 +26,23 @@
     _list_r_versions = []
     m_error = e.message.strip
   end
+
+
+  # get R session dirs
+  s_cmd = "bash -il -c 'mkdir -p $HOME/.rstudiosessions;ls $HOME/.rstudiosessions' 2>/dev/null"
+  begin
+    output, status = Open3.capture2e(s_cmd)
+    if status.success?
+      _list_r_sessions = output.split("\n").map(&:strip).reject(&:blank?).sort
+    else
+      raise output
+    end
+  rescue => e
+    _list_r_sessions = []
+    s_error = e.message.strip
+  end
+  _list_r_sessions.unshift("Create a NEW session")
+
 -%>
 ---
 cluster: "hpc"
@@ -33,6 +50,7 @@ cluster: "hpc"
 form:
   - sh_rstudio_version
   - sh_r_version
+  - sh_r_session
   - sh_modules
   - sh_partition
   - sh_cpus
@@ -52,6 +70,7 @@ attributes:
     label: "RStudio Version"
     widget: select
     options: 
+      - ["2024-12-1-563"]
       - ["2023-12-01-402"]
       - ["2023-09-01-494"]
       - ["2023-06-01-524"]
@@ -73,6 +92,26 @@ attributes:
       - [ "<%= q %>", "<%= q %>" ]
       <%- end -%>
     <%- end -%>
+
+  sh_r_session:
+    label: "R session directory "
+    <%- if s_error -%>
+      <span class="text-danger">Error when parsing module versions:</span>
+      ```
+      <%= s_error.gsub("\n", "\n      ") %>
+      ```
+    <%- end -%>
+    <%- if _list_r_sessions.blank? -%>
+    widget: text_field
+    <%- else -%>
+    widget: select
+    options:
+      <%- _list_r_sessions.each do |q| -%>
+      - [ "<%= q %>", "<%= q %>" ]
+      <%- end -%>
+    <%- end -%>
+
+ 
 
   sh_partition:
     label: "Partition"
