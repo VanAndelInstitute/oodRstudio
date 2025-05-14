@@ -28,20 +28,21 @@
   end
 
 
-  # get R session dirs
-  s_cmd = "bash -il -c 'mkdir -p $HOME/.rstudiosessions;ls $HOME/.rstudiosessions' 2>/dev/null"
+  # get User Home dir
+  s_cmd = "echo $HOME 2>/dev/null"
   begin
     output, status = Open3.capture2e(s_cmd)
     if status.success?
-      _list_r_sessions = output.split("\n").map(&:strip).reject(&:blank?).sort
+      _home_dir = output.strip
     else
       raise output
     end
   rescue => e
-    _list_r_sessions = []
+    _home_dir = "/home"
     s_error = e.message.strip
   end
-  _list_r_sessions.unshift("Create a NEW session")
+
+  
 
 -%>
 ---
@@ -50,19 +51,20 @@ cluster: "hpc"
 form:
   - sh_rstudio_version
   - sh_r_version
-  - sh_r_session
-  - sh_modules
   - sh_partition
+  - bc_num_hours
+  - bc_email_on_started
+  - sh_r_advanced    
+  - rstudio_session
+  - sh_modules
   - sh_cpus
 #  - sh_gpus
   - sh_mem
-  - bc_num_hours
-  - bc_email_on_started
 
 attributes:
 
   sh_modules:
-    label: "D Additional modules (optional)"
+    label: "Load Additional modules (optional)"
     help: |
         <small>Space separated list of additional modules to load</br/>
 
@@ -93,25 +95,25 @@ attributes:
       <%- end -%>
     <%- end -%>
 
-  sh_r_session:
-    label: "R session directory "
-    <%- if s_error -%>
-      <span class="text-danger">Error when parsing module versions:</span>
-      ```
-      <%= s_error.gsub("\n", "\n      ") %>
-      ```
-    <%- end -%>
-    <%- if _list_r_sessions.blank? -%>
-    widget: text_field
-    <%- else -%>
+  sh_r_advanced:
+    label: "Show Advanced RStudio options"    
     widget: select
     options:
-      <%- _list_r_sessions.each do |q| -%>
-      - [ "<%= q %>", "<%= q %>" ]
-      <%- end -%>
-    <%- end -%>
+      - ["Show only Basic Options", "basic", data-hide-rstudio-session: true, data-hide-sh-cpus: true, data-hide-sh-mem: true, data-hide-sh-modules: true]
+      - ["Show Advanced Options", "advanced"] 
+       
 
- 
+  rstudio_session:
+    label : "Choose an rsession directory (optional)"
+    widget: "path_selector"
+    value: "<%= _home_dir %>/.rstudiosessions/default"
+    directory: <%= _home_dir %>
+    show_hidden: true
+    show_files: false
+    favorites:
+      - <%= _home_dir %> 
+      - "/varidata/research/projects"
+      - "/varidara/researchtemp"
 
   sh_partition:
     label: "Partition"
