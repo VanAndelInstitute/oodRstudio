@@ -106,7 +106,7 @@ attributes:
        
 
   rstudio_session:
-    label : "Choose an rsession nirectory (optional)"
+    label : "Choose an rsession directory (optional)"
     help: "Use this advanced option to specify your session state directory. For example, if you want to work on multiple R Studio projects on different nodes at once. You will need to create a directory on HPC beforehand for each state dir. At VAI the default is /home/yourname/.rstudiosessions/default . Previously, the default was /home/your.name/.local/share/rstudio"
     widget: "path_selector"
     value: "<%= _home_dir %>/.rstudiosessions/default"
