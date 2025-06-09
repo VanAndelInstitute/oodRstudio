@@ -70,6 +70,7 @@ attributes:
 
   sh_rstudio_version: 
     label: "RStudio Version"
+    help: "Select your rstudio version, choosing the latest version is recommended"
     widget: select
     options: 
       - ["2024-12-1-563"]
@@ -79,6 +80,7 @@ attributes:
 
   sh_r_version:
     label: "R version"
+    help: "Select your R version, choosing the latest version is recommended"
     <%- if m_error -%>
       <span class="text-danger">Error when parsing module versions:</span>
       ```
@@ -104,7 +106,8 @@ attributes:
        
 
   rstudio_session:
-    label : "Choose an rsession directory (optional)"
+    label : "Choose an rsession nirectory (optional)"
+    help: "Use this advanced option to specify your session state directory. For example, if you want to work on multiple R Studio projects on different nodes at once. You will need to create a directory on HPC beforehand for each state dir. At VAI the default is /home/yourname/.rstudiosessions/default . Previously, the default was /home/your.name/.local/share/rstudio"
     widget: "path_selector"
     value: "<%= _home_dir %>/.rstudiosessions/default"
     directory: <%= _home_dir %>
