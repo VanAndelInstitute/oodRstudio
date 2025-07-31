@@ -1,0 +1,18 @@
+<%-
+      filename = "#{staged_root}/user_defined_context.json"
+      rstudio_session = "";
+      sh_r_version = "";
+      sh_modules = "";
+      if File.file?(filename)
+        file_content = File.read(filename)
+        parsed_data = JSON.parse(file_content)
+        rstudio_session = parsed_data['rstudio_session']
+        sh_r_version = parsed_data['sh_r_version']
+        sh_modules = parsed_data['sh_modules']
+      end
+
+%>
+
+<b>R Version:</b> <%=sh_r_version%><br/>
+<b>Modules Loaded:</b> <%=sh_modules%><br/>
+<b>Session Directory:</b> <%=rstudio_session%><br/>
