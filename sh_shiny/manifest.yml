@@ -1,0 +1,8 @@
+---
+name: Shiny app server 
+category: Interactive Apps
+subcategory: Servers
+role: batch_connect
+description: |
+  launch your working, existing shiny app on HPC.
+  

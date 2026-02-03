@@ -1,0 +1,122 @@
+<%-
+  # get _list_partitions
+#  p_cmd = "/usr/local/bin/sinfo -ho %R | sort -u"
+#  begin
+#    output, status = Open3.capture2e(p_cmd)
+#    if status.success?
+#      _list_partitions = output.split("\n").map(&:strip).reject(&:blank?).sort
+#    else
+#      raise output
+#    end
+#  rescue => e
+#    _list_partitions = []
+#    p_error = e.message.strip
+#  end
+
+  # get R modules
+  m_cmd = "bash -il -c 'module -t avail bbc2/R/ |& grep R' 2>/dev/null"
+  begin
+    output, status = Open3.capture2e(m_cmd)
+    if status.success?
+      _list_r_versions = output.split("\n").map(&:strip).reject(&:blank?).sort
+    else
+      raise output
+    end
+  rescue => e
+    _list_r_versions = []
+    m_error = e.message.strip
+  end
+
+
+  # get User Home dir
+  s_cmd = "echo $HOME 2>/dev/null"
+  begin
+    output, status = Open3.capture2e(s_cmd)
+    if status.success?
+      _home_dir = output.strip
+    else
+      raise output
+    end
+  rescue => e
+    _home_dir = "/home"
+    s_error = e.message.strip
+  end
+
+  
+
+-%>
+---
+cluster: "hpc"
+
+form:
+  - sh_r_version
+  - shiny_app_path
+  - sh_partition
+  - bc_num_hours
+  - bc_email_on_started
+  - sh_modules
+  - sh_cpus
+#  - sh_gpus
+  - sh_mem
+
+attributes:
+
+  sh_modules:
+    label: "Load Additional modules (optional)"
+    help: |
+        <small>Space separated list of additional modules to load</br/>
+
+  sh_r_version:
+    label: "R version"
+    help: "Select your R version, choosing the latest version is recommended"
+    <%- if m_error -%>
+      <span class="text-danger">Error when parsing module versions:</span>
+      ```
+      <%= m_error.gsub("\n", "\n      ") %>
+      ```
+    <%- end -%>
+    <%- if _list_r_versions.blank? -%>
+    widget: text_field
+    <%- else -%>
+    widget: select
+    options:
+      <%- _list_r_versions.each do |q| -%>
+      - [ "<%= q %>", "<%= q %>" ]
+      <%- end -%>
+    <%- end -%>
+
+  shiny_app_path:
+    label: "path to your shiny project"
+    value: "/varidata/research/projects/mylab/myapp/app.R"
+    required: true
+    help: "this can be either a single .R file, or a folder containing your server.R and ui.R"
+
+  sh_partition:
+    label: "Partition"
+    value: "short"
+    required: true
+    help: "For example: short bigmem long, or your private nodes."
+
+  sh_cpus:
+    label: "#CPUs"
+    widget: "number_field"
+    help: "<small>Number of CPU cores to allocate</small>"
+    required: true
+    min: 1
+    value: "1"
+
+  sh_gpus:
+    label: "#GPUs (optional)"
+    widget: "number_field"
+    help: "<small>Number of GPUs to allocate (don't forget to load the `cuda` module in the `Modules` field above and to select a partition with GPUs)</small>"
+    min: 0
+    max: 8
+    value: ""
+
+  sh_mem:
+    label: "Memory (GB) (optional)"
+    widget: "number_field"
+    help: "<small>Amount of memory to allocate</small>"
+
+  bc_num_hours:
+    label: "Runtime (in hours)"

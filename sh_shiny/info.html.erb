@@ -1,0 +1,12 @@
+<%-
+      filename = "#{staged_root}/user_defined_context.json"
+      shiny_app_path = "";
+      if File.file?(filename)
+        file_content = File.read(filename)
+        parsed_data = JSON.parse(file_content)
+        shiny_app_path = parsed_data['shiny_app_path']
+      end
+
+%>
+
+<b>Shiny app:</b> <%=shiny_app_path%><br/>
