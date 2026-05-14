@@ -9,6 +9,7 @@
         rstudio_session = parsed_data['rstudio_session']
         sh_r_version = parsed_data['sh_r_version']
         sh_modules = parsed_data['sh_modules']
+        sh_partition = parsed_data['sh_partition']
       end
 
 %>
@@ -16,3 +17,6 @@
 <b>R Version:</b> <%=sh_r_version%><br/>
 <b>Modules Loaded:</b> <%=sh_modules%><br/>
 <b>Session Directory:</b> <%=rstudio_session%><br/>
+<% if sh_partition.include?(":") -%>
+  <b>Node:</b> <%= sh_partition.split(":")[1].strip %> (<%= sh_partition.split(":")[0].strip %>)<br/>
+<% end -%>
