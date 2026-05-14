@@ -12,14 +12,14 @@ export RSTUDIOVERSION="<%= context.sh_rstudio_version %>"
 export PATH=$PATH:/varidata/research/software/rstudioserver/<%= context.sh_rstudio_version %>/bin
 RSTUDIO_DATA_HOME=$HOME/.rstudiosessions/default
 mkdir -p $RSTUDIO_DATA_HOME
-FORMPATH=<%= context.rstudio_session %>
+FORMPATH="<%= context.rstudio_session %>"
 
 
 if [ -d "$FORMPATH" ] ; then
-  RSTUDIO_DATA_HOME=$FORMPATH
+  RSTUDIO_DATA_HOME="${FORMPATH}"
 fi
 export RSTUDIO_DATA_HOME
-DATAID=`basename $RSTUDIO_DATA_HOME`
+DATAID=`basename "$RSTUDIO_DATA_HOME"`
 
 # Load the requested R module (required)
 module load <%= context.sh_r_version %>
@@ -57,7 +57,7 @@ sed 's/^ \{2\}//' > "${RSESSION_WRAPPER_FILE}" << EOL
   #!/usr/bin/env bash
 
   # Log all output from this script
-  export RSTUDIO_DATA_HOME=$RSTUDIO_DATA_HOME
+  export RSTUDIO_DATA_HOME="${RSTUDIO_DATA_HOME}"
   export RSESSION_LOG_FILE="${PWD}/rsession.log"
   exec &>>"\${RSESSION_LOG_FILE}"
 
