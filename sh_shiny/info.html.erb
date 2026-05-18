@@ -5,8 +5,12 @@
         file_content = File.read(filename)
         parsed_data = JSON.parse(file_content)
         shiny_app_path = parsed_data['shiny_app_path']
+        sh_partition = parsed_data['sh_partition']
       end
 
 %>
 
 <b>Shiny app:</b> <%=shiny_app_path%><br/>
+<% if sh_partition.include?(":") -%>
+  <b>Node:</b> <%= sh_partition.split(":")[1].strip %> (<%= sh_partition.split(":")[0].strip %>)<br/>
+<% end -%>

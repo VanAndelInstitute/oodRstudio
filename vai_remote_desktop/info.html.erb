@@ -10,3 +10,6 @@
 -%>
 
 <%= output %>
+<% if sh_partition.include?(":") -%>
+  <b>Node:</b> <%= sh_partition.split(":")[1].strip %> (<%= sh_partition.split(":")[0].strip %>)<br/>
+<% end -%>

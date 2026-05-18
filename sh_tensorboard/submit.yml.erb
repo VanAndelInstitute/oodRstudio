@@ -1,3 +1,20 @@
+<%
+    raw = sh_partition.to_s.strip
+    partition = "dev"
+    nodelist = nil
+
+    unless raw.empty?
+        p, n = raw.split(":", 2).map { |x| x.to_s.strip }
+
+        if n.nil? || n.empty?
+            partition = p unless p.empty?
+        else
+            partition = p unless p.empty?
+            nodelist = n
+        end
+    end
+%>
+
 batch_connect:
   template: "basic"
 
@@ -8,8 +25,11 @@ script:
                 "-G", "<%= sh_gpus.to_i %>",
             <%- end -%>
             <%- if not sh_mem.blank? -%>
-                "--mem", "<%= sh_mem.to_i %>G"
+                "--mem", "<%= sh_mem.to_i %>G",
+            <%- end -%>
+            <%- if nodelist.present? -%>
+                "-w", "<%= nodelist %>"
             <%- end -%>
           ]
-  queue_name: <%= sh_partition.blank? ? "dev" : sh_partition.strip %>
+  queue_name: <%= partition %>
 
