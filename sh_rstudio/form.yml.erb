@@ -14,7 +14,7 @@
 #  end
 
   # get R modules
-  m_cmd = "bash -il -c 'module -t avail bbc2/R/ |& grep R' 2>/dev/null"
+  m_cmd = "bash -il -c 'module -t -o \"\" avail bbc2/R/ |& grep R' 2>/dev/null"
   begin
     output, status = Open3.capture2e(m_cmd)
     if status.success?

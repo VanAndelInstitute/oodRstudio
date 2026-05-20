@@ -14,7 +14,7 @@
   end
 
   # get tensorflow modules
-  m_cmd = "bash -il -c 'module -t avail py-tensorflow |& grep tensorflow' 2>/dev/null"
+  m_cmd = "bash -il -c 'module -t -o \"\" avail py-tensorflow |& grep tensorflow' 2>/dev/null"
   begin
     output, status = Open3.capture2e(m_cmd)
     if status.success?
