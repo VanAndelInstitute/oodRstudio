@@ -1,0 +1,8 @@
+---
+name: BBC Shiny app server 
+category: Interactive Apps
+subcategory: Servers
+role: batch_connect
+description: |
+  Choose to launch any of the BBC's existing shiny app on HPC.
+  

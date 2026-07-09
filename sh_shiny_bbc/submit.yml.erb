@@ -1,0 +1,25 @@
+<%-
+  # shiny_app_selector is encoded as "path|r_module|name|runtime_hours|partition"
+  # (see form.yml.erb). Runtime and partition are driven by the CSV, so pull them
+  # from the selection here instead of from user-facing form fields.
+  _selection     = shiny_app_selector.to_s.split("|", 5)
+  _runtime_hours = _selection[3].to_i
+  _runtime_hours = 1 if _runtime_hours < 1
+  _partition     = _selection[4].to_s.strip
+-%>
+batch_connect:
+  template: "basic"
+
+script:
+  native: [
+            "-c", "<%= sh_cpus.blank?  ? 1 : sh_cpus.to_i %>",
+            <%- if not sh_gpus.blank? -%>
+                "-G", "<%= sh_gpus.to_i %>",
+            <%- end -%>
+            <%- if not sh_mem.blank? -%>
+                "--mem", "<%= sh_mem.to_i %>G"
+            <%- end -%>
+          ]
+  queue_name: <%= _partition.empty? ? "dev" : _partition %>
+  wall_time: <%= _runtime_hours * 3600 %>
+
