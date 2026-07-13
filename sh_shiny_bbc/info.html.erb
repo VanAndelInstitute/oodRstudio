@@ -1,0 +1,14 @@
+<%-
+      filename = "#{staged_root}/user_defined_context.json"
+      shiny_app_name = "";
+      if File.file?(filename)
+        file_content = File.read(filename)
+        parsed_data = JSON.parse(file_content)
+        # shiny_app_selector is encoded as "path|r_module|name|runtime_hours|partition"
+        # (see form.yml.erb); the display name is the 3rd field.
+        shiny_app_name = parsed_data['shiny_app_selector'].to_s.split("|", 5)[2]
+      end
+
+%>
+
+<b>Shiny app:</b> <%=shiny_app_name%><br/>

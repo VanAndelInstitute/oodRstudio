@@ -1,0 +1,77 @@
+<%-
+  # get list of Shiny apps from csv (shiny_list.csv)
+  # each app row must specify its R module in the 2nd field ("r_module");
+  # this is hidden from the user and encoded into the selector option value.
+  require 'csv'
+  begin
+    csv_path = File.join(File.dirname(__FILE__), "shiny_list.csv")
+    _list_shiny_apps = CSV.read(csv_path, headers: true).map do |row|
+      path = row["path"]
+      rmod = row["r_module"]
+      name = row["name"]
+      runtime = row["runtime_hours"]
+      partition = row["partition"]
+      if rmod.nil? || rmod.strip.empty?
+        raise "Missing required 'r_module' field for app '#{name}' (#{path})"
+      end
+      if runtime.nil? || runtime.strip.empty?
+        raise "Missing required 'runtime_hours' field for app '#{name}' (#{path})"
+      end
+      if partition.nil? || partition.strip.empty?
+        raise "Missing required 'partition' field for app '#{name}' (#{path})"
+      end
+      [path, rmod.strip, name, runtime.strip, partition.strip]
+    end
+  rescue => e
+    _list_shiny_apps = []
+    csv_error = e.message.strip
+  end
+
+
+  # get User Home dir
+  s_cmd = "echo $HOME 2>/dev/null"
+  begin
+    output, status = Open3.capture2e(s_cmd)
+    if status.success?
+      _home_dir = output.strip
+    else
+      raise output
+    end
+  rescue => e
+    _home_dir = "/home"
+    s_error = e.message.strip
+  end
+
+  
+
+-%>
+---
+cluster: "hpc"
+
+form:
+  - shiny_app_selector
+  - bc_email_on_started
+
+attributes:
+
+  shiny_app_selector:
+    label: "Shiny app to launch"
+    help: |
+      Select the Shiny app you want to launch on HPC
+      <%- if csv_error -%>
+      <span class="text-danger">Error when parsing shiny_list.csv:</span>
+      ```
+      <%= csv_error.gsub("\n", "\n      ") %>
+      ```
+      <%- end -%>
+    <%- if _list_shiny_apps.blank? -%>
+    widget: text_field
+    <%- else -%>
+    widget: select
+    options:
+      <%- _list_shiny_apps.each do |path, r_module, name, runtime_hours, partition| -%>
+      - [ "<%= name %>", "<%= path %>|<%= r_module %>|<%= name %>|<%= runtime_hours %>|<%= partition %>" ]
+      <%- end -%>
+    <%- end -%>
+    
+
