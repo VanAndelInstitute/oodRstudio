@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+<%-
+  # shiny_app_selector encodes the app path, its R module, name, runtime, and
+  # partition as "path|r_module|name|runtime_hours|partition" (see form.yml.erb).
+  # Split them here so the R version is driven entirely by the CSV, not by a
+  # user-facing dropdown.
+  _selection  = context.shiny_app_selector.to_s.split("|", 5)
+  _shiny_path = _selection[0]
+  _r_module   = _selection[1]
+-%>
+
+#
+# Load modules
+#
+
+# Purge the module environment to avoid conflicts
+#module reset
+
+
+
+# Load the requested R module (required, from shiny_list.csv)
+module load <%= _r_module %>
+
+
+#
+# Start shiny Server
+#
+
+
+#rstudio tmp dir
+
+
+
+# Set working directory to home directory
+
+# Launch the shiny 
+shinyproject="<%= _shiny_path %>"
+
+echo "Starting up shiny..."
+set -x
+if [ -e "$shinyproject" ]; then
+  if [ -d "$shinyproject" ]; then
+    Rscript -e  "shiny::runApp('$shinyproject')" &
+  else
+    Rscript "$shinyproject" &
+  fi
+else
+  echo "could not find valid shiny project, bad path?"
+  exit 1
+fi
+sleep 10 
+shinyport=`cat output.log |grep Listening | awk -F'[:/ ]+' '{print $5}'`
+if [ -n "$shinyport" ]; then
+  if ! [[ "$shinyport" =~ ^[0-9]+$ ]] || [ "$shinyport" -lt 1 ] || [ "$shinyport" -gt 65535 ]; then
+    echo "did not find shiny running on localhost tcp port"
+  else 
+    /varidata/research/software/caddy/default/caddy reverse-proxy --from http://:${port} --to localhost:$shinyport
+  fi
+fi
