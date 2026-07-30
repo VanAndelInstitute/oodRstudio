@@ -70,7 +70,7 @@ attributes:
 
   sh_rstudio_version: 
     label: "RStudio Version"
-    help: "Select your rstudio version, choosing the latest version is recommended"
+    help: "Select your RStudio version, choosing the latest version is recommended"
     widget: select
     options: 
       - ["2026-01-31-392"]
@@ -108,12 +108,13 @@ attributes:
 
   rstudio_session:
     label : "Choose an rsession directory (optional)"
-    help: "Use this advanced option to specify your session state directory. For example, if you want to work on multiple R Studio projects on different nodes at once. You will need to create a directory on HPC beforehand for each state dir. At VAI the default is /home/yourname/.rstudiosessions/default . Previously, the default was /home/your.name/.local/share/rstudio"
+    help: "Use this advanced option to specify your session state directory (e.g., if you want to work on multiple RStudio projects on different nodes at once). You will need to first **create** this directory on HPC if it doesn't already exist.<br>At VAI the default is /home/your.name/.rstudiosessions/default (previously, the default was /home/your.name/.local/share/rstudio)"
     widget: "path_selector"
     value: "<%= _home_dir %>/.rstudiosessions/default"
     directory: <%= _home_dir %>
     show_hidden: true
     show_files: false
+    popup_title: "Select Your RStudio Session Directory"
     favorites:
       - <%= _home_dir %> 
       - "/varidata/research/projects"
@@ -123,7 +124,8 @@ attributes:
     label: "Partition"
     value: "short"
     required: true
-    help: "For example: short bigmem long, or your private nodes."
+    help: "For example: short, long, bigmem, or your private nodes."
+    widget: text_field
 
   sh_cpus:
     label: "#CPUs"
