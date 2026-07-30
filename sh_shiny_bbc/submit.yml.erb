@@ -11,6 +11,7 @@ batch_connect:
   template: "basic"
 
 script:
+  job_name: bbc_shiny_ondemand
   native: [
             "-c", "<%= sh_cpus.blank?  ? 1 : sh_cpus.to_i %>",
           ]

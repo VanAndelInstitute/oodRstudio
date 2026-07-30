@@ -19,6 +19,7 @@ batch_connect:
   template: "basic"
 
 script:
+  job_name: remote_desktop_ondemand
   native: [
             "-c", "<%= sh_cpus.blank?  ? 1 : sh_cpus.to_i %>",
             <%- if not sh_gpus.blank? -%>
